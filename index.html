@@ -1,116 +1,741 @@
-<!DOCTYPE html>
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mrunmai Vhatkar - Cybersecurity Professional</title>
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <meta name="description" content="Mrunmai Vhatkar's Portfolio - SOC Analyst and Aspiring Threat Hunter skilled in FortiSIEM, Elastic SIEM, and threat intelligence.">
+    <meta name="keywords" content="Mrunmai Vhatkar, Threat Hunter, SOC Analyst, Cybersecurity, FortiSIEM, Elastic SIEM, CEH, CCNA">
+    <meta name="author" content="Mrunmai Vhatkar">
+    <title>Mrunmai Vhatkar - Threat Hunter Portfolio</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="https://via.placeholder.com/32?text=MV">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            overflow-x: hidden;
+        }
+        /* Navbar */
+        .navbar {
+            background: rgba(20, 20, 30, 0.95);
+            backdrop-filter: blur(12px);
+            transition: all 0.3s ease;
+        }
+        .navbar.scrolled {
+            box-shadow: 0 4px 12px rgba(255, 105, 180, 0.3);
+        }
+        .navbar-brand, .nav-link {
+            color: #ff69b4 !important;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .nav-link:hover {
+            color: #d3adf7 !important;
+            transform: scale(1.1);
+        }
+        /* Hero Section */
+        .hero {
+            position: relative;
+            background: linear-gradient(135deg, #ff69b4, #d3adf7, #6b7280);
+            padding: 150px 0;
+            text-align: center;
+            overflow: hidden;
+        }
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+        .hero h1 {
+            font-size: 4.5rem;
+            font-weight: 800;
+            text-shadow: 0 0 20px rgba(255, 105, 180, 0.5);
+        }
+        .hero p {
+            font-size: 1.8rem;
+            font-weight: 300;
+        }
+        /* Sections */
+        .section {
+            padding: 100px 0;
+        }
+        .section h2 {
+            font-weight: 700;
+            color: #ff69b4;
+            text-shadow: 0 0 10px rgba(255, 105, 180, 0.3);
+        }
+        /* Glassmorphism Cards */
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border: none;
+            border-radius: 20px;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            padding: 20px;
+        }
+        .card:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 15px 50px rgba(255, 105, 180, 0.4);
+        }
+        .skill-icon {
+            font-size: 3rem;
+            color: #ff69b4;
+            transition: transform 0.3s ease;
+        }
+        .card:hover .skill-icon {
+            transform: rotate(360deg);
+        }
+        /* Buttons */
+        .btn-neon {
+            background: #ff69b4;
+            border: none;
+            color: #fff;
+            font-weight: 600;
+            border-radius: 50px;
+            padding: 12px 40px;
+            box-shadow: 0 0 15px #ff69b4;
+            transition: all 0.3s ease;
+        }
+        .btn-neon:hover {
+            background: #d3adf7;
+            box-shadow: 0 0 25px #d3adf7;
+            transform: scale(1.1);
+        }
+        /* Contact Form */
+        .contact-form {
+            max-width: 700px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 20px;
+            backdrop-filter: blur(15px);
+            position: relative;
+        }
+        .form-control {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid #ff69b4;
+            color: #fff;
+            border-radius: 10px;
+        }
+        .form-control:focus {
+            border-color: #d3adf7;
+            box-shadow: 0 0 10px #d3adf7;
+        }
+        .loading-spinner {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 4px solid #ff69b4;
+            border-top: 4px solid #d3adf7;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+        /* Footer */
+        .footer {
+            background: #14141e;
+            padding: 40px 0;
+            text-align: center;
+        }
+        .footer a {
+            color: #ff69b4;
+            margin: 0 15px;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        .footer a:hover {
+            color: #d3adf7;
+            transform: scale(1.3);
+        }
+        /* Back to Top */
+        #back-to-top {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            background: #ff69b4;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 15px #ff69b4;
+            transition: all 0.3s ease;
+        }
+        #back-to-top:hover {
+            background: #d3adf7;
+            transform: scale(1.2);
+        }
+        /* Threat Map */
+        #threat-map {
+            height: 400px;
+            background: #1a1a2e;
+            border-radius: 20px;
+            margin-top: 40px;
+        }
+        /* Blog Section */
+        .blog-post {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        /* Animations */
+        .animate__animated {
+            animation-duration: 1.2s;
+        }
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.8rem;
+            }
+            .hero p {
+                font-size: 1.3rem;
+            }
+            .card {
+                margin-bottom: 20px;
+            }
+            #threat-map {
+                height: 300px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- Loading Screen -->
-    <div id="loader">
-        <div class="spinner"></div>
-    </div>
-
-    <!-- Main Content -->
-    <div id="content" style="display: none;">
-        <header>
-            <nav>
-                <ul>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#skills">Skills</a></li>
-                    <li><a href="#projects">Projects</a></li>
-                    <li><a href="#education">Education</a></li>
-                    <li><a href="#contact">Contact</a></li>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand animate__animated animate__fadeIn" href="#">Mrunmai Vhatkar</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link animate__animated animate__fadeIn" href="#home">Home</a></li>
+                    <li class="nav-item"><a class="nav-link animate__animated animate__fadeIn" href="#about">About</a></li>
+                    <li class="nav-item"><a class="nav-link animate__animated animate__fadeIn" href="#skills">Skills</a></li>
+                    <li class="nav-item"><a class="nav-link animate__animated animate__fadeIn" href="#projects">Projects</a></li>
+                    <li class="nav-item"><a class="nav-link animate__animated animate__fadeIn" href="#certifications">Certifications</a></li>
+                    <li class="nav-item"><a class="nav-link animate__animated animate__fadeIn" href="#blog">Blog</a></li>
+                    <li class="nav-item"><a class="nav-link animate__animated animate__fadeIn" href="#contact">Contact</a></li>
                 </ul>
-            </nav>
-        </header>
-
-        <section id="about">
-            <div class="profile">
-                <h1>Mrunmai Vhatkar</h1>
-                <p>B.Tech. Computer Science and Engineering</p>
-                <p><i class="fas fa-map-marker-alt"></i> Karve Nagar, Pune (411052)</p>
-                <p><i class="fas fa-envelope"></i> vhatkarmrunmai@gmail.com</p>
-                <p><i class="fab fa-linkedin"></i> LinkedIn</p>
-                <p><i class="fas fa-phone"></i> 7758999456</p>
             </div>
-            <div class="summary">
-                <h2>Summary</h2>
-                <p>A dedicated cybersecurity professional with coursework in cybersecurity and experience in network security. Skilled in vulnerability analysis, incident response, and familiar with SIEM tools like Splunk and QRadar. Strong understanding of networking concepts, MITRE ATT&CK framework, and cloud security.</p>
-            </div>
-        </section>
+        </div>
+    </nav>
 
-        <section id="skills">
-            <h2>Technical Skills</h2>
-            <div class="skills-grid">
-                <div class="skill-card"><i class="fas fa-shield-alt"></i> SIEM Tools (Splunk, QRadar, LogRhythm)</div>
-                <div class="skill-card"><i class="fas fa-code"></i> Scripting Languages</div>
-                <div class="skill-card"><i class="fas fa-network-wired"></i> Networking Concepts</div>
-                <div class="skill-card"><i class="fas fa-bug"></i> Vulnerability Analysis</div>
-                <div class="skill-card"><i class="fas fa-laptop-code"></i> Programming: C, C++, C#, Python, SQL</div>
-                <div class="skill-card"><i class="fas fa-database"></i> Databases: Oracle, MySQL, Firebase</div>
-                <div class="skill-card"><i class="fab fa-html5"></i> Web: HTML, CSS</div>
-                <div class="skill-card"><i class="fas fa-tools"></i> Tools: Kali Linux, Wireshark, Nmap, Metasploit</div>
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div id="particles-js"></div>
+        <div class="container hero-content">
+            <h1 class="animate__animated animate__zoomIn">Mrunmai Vhatkar</h1>
+            <p class="animate__animated animate__fadeInUp">SOC Analyst & Aspiring Threat Hunter</p>
+            <div class="mt-4">
+                <a href="#contact" class="btn btn-neon animate__animated animate__pulse">Connect with Me</a>
+                <button id="generate-resume" class="btn btn-outline-light ms-2 animate__animated animate__pulse">Generate Resume</button>
+                <a href="resume.pdf" class="btn btn-outline-light ms-2 animate__animated animate__pulse" target="_blank">View Resume</a>
             </div>
-            <h2>Interpersonal Skills</h2>
-            <p>Teamwork, Collaboration, Problem-solving, Supervision, Time Management, Analytical Skills, Communication, Credibility, Flexibility, Mentorship</p>
-        </section>
+        </div>
+    </section>
 
-        <section id="projects">
-            <h2>Projects</h2>
-            <div class="project-card">
-                <h3>Aptister (2D Quiz Game)</h3>
-                <p><strong>Duration:</strong> 18 June 2023 - 20 Oct 2023</p>
-                <p><strong>Mentor:</strong> Prof. K. T. Mane | <strong>Team Size:</strong> 3 | <strong>Role:</strong> Team Lead</p>
-                <p>An engaging college project showcasing a dynamic and interactive learning experience. Features include Firebase integration for score storage, administrative controls for quiz content management, and a visually appealing UI.</p>
-                <p><strong>Features:</strong> Student management system, Online quiz, Admin interface, Real-time sync, Firebase.</p>
+    <!-- About Section -->
+    <section id="about" class="section">
+        <div class="container">
+            <h2 class="text-center animate__animated animate__fadeIn">About Me</h2>
+            <div class="row">
+                <div class="col-md-10 offset-md-1">
+                    <p class="lead animate__animated animate__fadeInUp">SOC Analyst with 6 months of real-time experience at WysaTech Systems, Mumbai, specializing in Elastic SIEM, FortiSIEM, and QRadar. Skilled in threat detection, rule optimization, and incident handling, with a CCNA certification and CEH in progress. Passionate about transitioning into a threat hunter, I’m adept at leveraging threat intelligence, cyber kill chain analysis, and network traffic analysis to proactively hunt adversaries. Based in Mumbai and ready to bring precision and reliability to 24x7 SOC operations globally.</p>
+                </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section id="education">
-            <h2>Education</h2>
-            <div class="education-card">
-                <h3>D. Y. Patil College of Engineering and Technology, Kolhapur</h3>
-                <p>B.Tech. Computer Science | June 2019 – Nov 2023 | 73.96%</p>
+    <!-- Skills Section -->
+    <section id="skills" class="section bg-dark">
+        <div class="container">
+            <h2 class="text-center animate__animated animate__fadeIn">Technical Skills</h2>
+            <div class="row">
+                <div class="col-md-4 animate__animated animate__fadeInLeft" data-tilt>
+                    <div class="card text-center p-4">
+                        <i class="fas fa-shield-alt skill-icon"></i>
+                        <h5>SIEM & Monitoring</h5>
+                        <p>Elastic SIEM, FortiSIEM, QRadar</p>
+                    </div>
+                </div>
+                <div class="col-md-4 animate__animated animate__fadeInUp" data-tilt>
+                    <div class="card text-center p-4">
+                        <i class="fas fa-network-wired skill-icon"></i>
+                        <h5>Networking</h5>
+                        <p>Routing, Switching, VPN, Subnetting, FortiGate</p>
+                    </div>
+                </div>
+                <div class="col-md-4 animate__animated animate__fadeInRight" data-tilt>
+                    <div class="card text-center p-4">
+                        <i class="fas fa-code skill-icon"></i>
+                        <h5>Programming</h5>
+                        <p>C, C++, Python, SQL</p>
+                    </div>
+                </div>
+                <div class="col-md-4 animate__animated animate__fadeInLeft" data-tilt>
+                    <div class="card text-center p-4">
+                        <i class="fas fa-bug skill-icon"></i>
+                        <h5>Threat Management</h5>
+                        <p>Cyber Kill Chain, Incident Response, Threat Intelligence</p>
+                    </div>
+                </div>
+                <div class="col-md-4 animate__animated animate__fadeInUp" data-tilt>
+                    <div class="card text-center p-4">
+                        <i class="fas fa-tools skill-icon"></i>
+                        <h5>Security Tools</h5>
+                        <p>Wireshark, Nmap, Metasploit, Kali Linux</p>
+                    </div>
+                </div>
+                <div class="col-md-4 animate__animated animate__fadeInRight" data-tilt>
+                    <div class="card text-center p-4">
+                        <i class="fas fa-user-shield skill-icon"></i>
+                        <h5>Interpersonal Skills</h5>
+                        <p>Communication, Collaboration, Problem-Solving</p>
+                    </div>
+                </div>
             </div>
-            <div class="education-card">
-                <h3>P. Vivekananda College, Kolhapur</h3>
-                <p>12th Grade (HSC) | June 2017 – June 2018 | 54.62%</p>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="section">
+        <div class="container">
+            <h2 class="text-center animate__animated animate__fadeIn">Projects</h2>
+            <div class="row">
+                <div class="col-md-6 animate__animated animate__fadeInUp" data-tilt>
+                    <div class="card p-4">
+                        <h5>Aptister - 2D Quiz Game</h5>
+                        <p><strong>Duration:</strong> June 2023 - Oct 2023</p>
+                        <p><strong>Role:</strong> Team Lead</p>
+                        <p><strong>Mentor:</strong> Prof. K. T. Mane</p>
+                        <p>An engaging 2D quiz game for students, integrated with Firebase for real-time score storage and sync. Features a student management system, online quiz, and admin interface for content management, enhancing educational engagement.</p>
+                        <p><strong>Technologies:</strong> Firebase, Unity Engine, C#</p>
+                    </div>
+                </div>
             </div>
-            <div class="education-card">
-                <h3>S.K.Pant Walawalkar Highschool</h3>
-                <p>10th Grade (SSC) | Batch 2016 | 89.60%</p>
+        </div>
+    </section>
+
+    <!-- Certifications Section -->
+    <section id="certifications" class="section bg-dark">
+        <div class="container">
+            <h2 class="text-center animate__animated animate__fadeIn">Certifications</h2>
+            <div class="row">
+                <div class="col-md-4 animate__animated animate__fadeInLeft" data-tilt>
+                    <div class="card text-center p-4">
+                        <h5>CCNA</h5>
+                        <p>Cisco Certified Network Associate</p>
+                    </div>
+                </div>
+                <div class="col-md-4 animate__animated animate__fadeInUp" data-tilt>
+                    <div class="card text-center p-4">
+                        <h5>FortiSIEM Analyst</h5>
+                        <p>Fortinet SIEM Expertise</p>
+                    </div>
+                </div>
+                <div class="col-md-4 animate__animated animate__fadeInRight" data-tilt>
+                    <div class="card text-center p-4">
+                        <h5>CEH (In Progress)</h5>
+                        <p>Certified Ethical Hacker Preparation</p>
+                    </div>
+                </div>
+                <div class="col-md-4 animate__animated animate__fadeInLeft" data-tilt>
+                    <div class="card text-center p-4">
+                        <h5>FortiGate Operator</h5>
+                        <p>Fortinet Firewall Management</p>
+                    </div>
+                </div>
+                <div class="col-md-4 animate__animated animate__fadeInUp" data-tilt>
+                    <div class="card text-center p-4">
+                        <h5>IT Security and Ethical Hacking</h5>
+                        <p>Foundational Cybersecurity Skills</p>
+                    </div>
+                </div>
+                <div class="col-md-4 animate__animated animate__fadeInRight" data-tilt>
+                    <div class="card text-center p-4">
+                        <h5>Cyber Forensics</h5>
+                        <p>Digital Investigation Techniques</p>
+                    </div>
+                </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section id="contact">
-            <h2>Personal Details</h2>
-            <p><strong>Permanent Address:</strong> Kolhapur (416006)</p>
-            <p><strong>Date of Birth:</strong> 7 April 2001</p>
-            <p><strong>Nationality:</strong> Indian</p>
-            <p><strong>Marital Status:</strong> Unmarried</p>
-            <p><strong>Languages:</strong> English, Hindi, Marathi</p>
-            <h2>Declaration</h2>
-            <p>I hereby declare that all the specific information provided above is true to the best of my knowledge and belief.</p>
-            <p><strong>Date:</strong> 05/08/2024</p>
-            <p><strong>Signature:</strong> Mrunmai S Vhatkar</p>
-        </section>
+    <!-- Education Section -->
+    <section id="education" class="section">
+        <div class="container">
+            <h2 class="text-center animate__animated animate__fadeIn">Education</h2>
+            <div class="row">
+                <div class="col-md-6 animate__animated animate__fadeInLeft" data-tilt>
+                    <div class="card p-4">
+                        <h5>B.Tech in Computer Science and Engineering</h5>
+                        <p><strong>D.Y. Patil College of Engineering and Technology, Kolhapur</strong></p>
+                        <p><strong>June 2019 - Nov 2023</strong></p>
+                        <p>Percentage: 73.96%</p>
+                    </div>
+                </div>
+                <div class="col-md-6 animate__animated animate__fadeInRight" data-tilt>
+                    <div class="card p-4">
+                        <h5>12th Grade (HSC)</h5>
+                        <p><strong>P. Vivekananda College, Kolhapur</strong></p>
+                        <p><strong>June 2017 - June 2018</strong></p>
+                        <p>Percentage: 54.62%</p>
+                    </div>
+                </div>
+                <div class="col-md-6 animate__animated animate__fadeInUp" data-tilt>
+                    <div class="card p-4">
+                        <h5>10th Grade (SSC)</h5>
+                        <p><strong>S.K. Pant Walawalkar Highschool</strong></p>
+                        <p><strong>Batch: 2016</strong></p>
+                        <p>Percentage: 89.60%</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-        <footer>
-            <p>&copy; 2025 Mrunmai Vhatkar. All rights reserved.</p>
-        </footer>
-    </div>
+    <!-- Blog Section -->
+    <section id="blog" class="section bg-dark">
+        <div class="container">
+            <h2 class="text-center animate__animated animate__fadeIn">Insights</h2>
+            <div class="row">
+                <div class="col-md-8 offset-md-2 animate__animated animate__fadeInUp">
+                    <div class="blog-post">
+                        <h5>Alert Fatigue: The Silent SOC Killer</h5>
+                        <p><strong>Published:</strong> May 2025</p>
+                        <p>In the SOC, we dream of catching APTs, but the reality? Sifting through 10,000 false positives at 2 AM. Alert fatigue is real—here’s how threat hunting and automation can cut the noise and keep us sane.</p>
+                        <a href="#" class="btn btn-neon">Read More</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
+    <!-- Threat Map Section -->
+    <section id="threat-map-section" class="section">
+        <div class="container">
+            <h2 class="text-center animate__animated animate__fadeIn">Live Threat Map</h2>
+            <div id="threat-map" class="animate__animated animate__fadeInUp"></div>
+            <p class="text-center mt-3">*Placeholder for real-time threat visualization (API integration pending)</p>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section bg-dark">
+        <div class="container">
+            <h2 class="text-center animate__animated animate__fadeIn">Contact Me</h2>
+            <form id="contact-form" class="contact-form animate__animated animate__fadeInUp" aria-label="Contact Form">
+                <div class="loading-spinner" id="form-spinner"></div>
+                <div class="mb-3">
+                    <label for="name" class="form-label">Name</label>
+                    <input type="text" class="form-control" id="name" required aria-required="true">
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" required aria-required="true">
+                </div>
+                <div class="mb-3">
+                    <label for="message" class="form-label">Message</label>
+                    <textarea class="form-control" id="message" rows="5" required aria-required="true"></textarea>
+                </div>
+                <button type="submit" class="btn btn-neon w-100">Send Message</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>© 2025 Mrunmai Vhatkar. All rights reserved.</p>
+            <p>
+                <a href="mailto:vhatkarmrunmai@gmail.com" aria-label="Email"><i class="fas fa-envelope"></i></a>
+                <a href="https://www.linkedin.com/in/mrunmaisubhashvhatkar26" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                <a href="tel:+917758999456" aria-label="Phone"><i class="fas fa-phone"></i></a>
+            </p>
+        </div>
+    </footer>
+
+    <!-- Back to Top -->
+    <button id="back-to-top" title="Back to Top" aria-label="Back to Top"><i class="fas fa-arrow-up"></i></button>
+
+    <!-- jQuery (for Tilt.js) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    <!-- Particles.js -->
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <!-- ScrollTrigger -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <!-- Tilt.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tilt.js/1.2.1/tilt.jquery.min.js"></script>
+    <!-- jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script>
-        // Loading screen animation
-        window.onload = function() {
-            setTimeout(() => {
-                document.getElementById('loader').style.display = 'none';
-                document.getElementById('content').style.display = 'block';
-            }, 3000);
+        window.onload = () => {
+            try {
+                // Navbar Shadow
+                window.addEventListener('scroll', () => {
+                    const navbar = document.querySelector('.navbar');
+                    navbar.classList.toggle('scrolled', window.scrollY > 50);
+                });
+
+                // Smooth Scrolling
+                document.querySelectorAll('.nav-link').forEach(anchor => {
+                    anchor.addEventListener('click', e => {
+                        e.preventDefault();
+                        document.querySelector(anchor.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+                    });
+                });
+
+                // Back to Top
+                const backToTop = document.getElementById('back-to-top');
+                window.addEventListener('scroll', () => {
+                    backToTop.style.display = window.scrollY > 300 ? 'flex' : 'none';
+                });
+                backToTop.addEventListener('click', () => {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+
+                // Particles.js
+                particlesJS('particles-js', {
+                    particles: {
+                        number: { value: 100, density: { enable: true, value_area: 800 } },
+                        color: { value: ['#ff69b4', '#d3adf7', '#6b7280'] },
+                        shape: { type: 'circle' },
+                        opacity: { value: 0.6, random: true },
+                        size: { value: 4, random: true },
+                        line_linked: { enable: true, distance: 120, color: '#ff69b4', opacity: 0.4, width: 1 },
+                        move: { enable: true, speed: 3, direction: 'none', random: true }
+                    },
+                    interactivity: {
+                        detect_on: 'canvas',
+                        events: { onhover: { enable: true, mode: 'repulse' }, onclick: { enable: true, mode: 'push' } },
+                        modes: { repulse: { distance: 100, duration: 0.4 }, push: { particles_nb: 4 } }
+                    },
+                    retina_detect: true
+                });
+
+                // GSAP Scroll Animations
+                gsap.registerPlugin(ScrollTrigger);
+                document.querySelectorAll('.section').forEach(section => {
+                    gsap.from(section.querySelectorAll('.card, .blog-post, .contact-form'), {
+                        scrollTrigger: {
+                            trigger: section,
+                            start: 'top 80%',
+                            toggleActions: 'play none none none'
+                        },
+                        y: 50,
+                        opacity: 0,
+                        duration: 1,
+                        stagger: 0.2
+                    });
+                });
+
+                // Tilt.js
+                $('.card').tilt({
+                    maxTilt: 15,
+                    scale: 1.05,
+                    speed: 400
+                });
+
+                // Firebase Configuration
+                const firebaseConfig = {
+                    apiKey: "YOUR_API_KEY",
+                    authDomain: "YOUR_AUTH_DOMAIN",
+                    projectId: "YOUR_PROJECT_ID",
+                    storageBucket: "YOUR_STORAGE_BUCKET",
+                    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+                    appId: "YOUR_APP_ID"
+                };
+
+                // Initialize Firebase
+                const app = firebase.initializeApp(firebaseConfig);
+                const db = firebase.firestore();
+
+                // Contact Form Submission
+                const contactForm = document.getElementById('contact-form');
+                const spinner = document.getElementById('form-spinner');
+                contactForm.addEventListener('submit', e => {
+                    e.preventDefault();
+                    spinner.style.display = 'block';
+                    const name = document.getElementById('name').value;
+                    const email = document.getElementById('email').value;
+                    const message = document.getElementById('message').value;
+
+                    db.collection('contacts').add({
+                        name: name,
+                        email: email,
+                        message: message,
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    }).then(() => {
+                        spinner.style.display = 'none';
+                        alert('Message sent successfully!');
+                        contactForm.reset();
+                    }).catch(error => {
+                        spinner.style.display = 'none';
+                        console.error('Firebase Error:', error);
+                        alert('Error sending message. Please try again.');
+                    });
+                });
+
+                // Generate Resume with jsPDF
+                document.getElementById('generate-resume').addEventListener('click', () => {
+                    const { jsPDF } = window.jspdf;
+                    const doc = new jsPDF();
+
+                    doc.setFont('Poppins', 'normal');
+                    doc.setFontSize(20);
+                    doc.setTextColor(255, 105, 180);
+                    doc.text('Mrunmai Vhatkar', 20, 20);
+                    doc.setFontSize(12);
+                    doc.setTextColor(0, 0, 0);
+                    doc.text('SOC Analyst & Aspiring Threat Hunter', 20, 30);
+                    doc.text('vhatkarmrunmai@gmail.com | +91 7758999456', 20, 40);
+                    doc.text('Mumbai, Maharashtra (400097)', 20, 50);
+                    doc.text('LinkedIn: linkedin.com/in/mrunmaisubhashvhatkar26', 20, 60);
+
+                    doc.setFontSize(16);
+                    doc.setTextColor(255, 105, 180);
+                    doc.text('Summary', 20, 80);
+                    doc.setFontSize(10);
+                    doc.setTextColor(0, 0, 0);
+                    doc.text('SOC Analyst with 6 months of real-time experience in Elastic SIEM, FortiSIEM, and QRadar. Skilled in threat detection, rule optimization, and incident handling. CCNA certified, CEH in progress, with strong grounding in networking and cybersecurity.', 20, 90, { maxWidth: 170 });
+
+                    doc.setFontSize(16);
+                    doc.setTextColor(255, 105, 180);
+                    doc.text('Experience', 20, 120);
+                    doc.setFontSize(12);
+                    doc.setTextColor(0, 0, 0);
+                    doc.text('SOC Analyst, WysaTech Systems, Mumbai', 20, 130);
+                    doc.text('Nov 2024 - Present', 20, 140);
+                    doc.text('• Mastered FortiSIEM and Elastic SIEM for threat detection', 20, 150);
+                    doc.text('• Optimized SIEM rules, reducing false positives by 20%', 20, 160);
+                    doc.text('• Conducted incident triage and network traffic analysis', 20, 170);
+
+                    doc.setFontSize(16);
+                    doc.setTextColor(255, 105, 180);
+                    doc.text('Education', 20, 190);
+                    doc.setFontSize(12);
+                    doc.setTextColor(0, 0, 0);
+                    doc.text('B.Tech in Computer Science and Engineering', 20, 200);
+                    doc.text('D.Y. Patil College of Engineering, Kolhapur, 2019-2023', 20, 210);
+                    doc.text('Percentage: 73.96%', 20, 220);
+                    doc.text('12th Grade (HSC), P. Vivekananda College, Kolhapur, 2017-2018', 20, 230);
+                    doc.text('Percentage: 54.62%', 20, 240);
+                    doc.text('10th Grade (SSC), S.K. Pant Walawalkar Highschool, 2016', 20, 250);
+                    doc.text('Percentage: 89.60%', 20, 260);
+
+                    doc.addPage();
+                    doc.setFontSize(16);
+                    doc.setTextColor(255, 105, 180);
+                    doc.text('Certifications', 20, 20);
+                    doc.setFontSize(12);
+                    doc.setTextColor(0, 0, 0);
+                    doc.text('• CCNA', 20, 30);
+                    doc.text('• FortiSIEM Analyst', 20, 40);
+                    doc.text('• FortiGate Operator', 20, 50);
+                    doc.text('• IT Security and Ethical Hacking', 20, 60);
+                    doc.text('• Cyber Forensics', 20, 70);
+                    doc.text('• CEH (In Progress)', 20, 80);
+
+                    doc.setFontSize(16);
+                    doc.setTextColor(255, 105, 180);
+                    doc.text('Projects', 20, 100);
+                    doc.setFontSize(12);
+                    doc.setTextColor(0, 0, 0);
+                    doc.text('Aptister - 2D Quiz Game', 20, 110);
+                    doc.text('June 2023 - Oct 2023', 20, 120);
+                    doc.text('• Led development of an interactive quiz game with Firebase integration', 20, 130);
+                    doc.text('• Implemented student management and admin interface', 20, 140);
+
+                    doc.setFontSize(16);
+                    doc.setTextColor(255, 105, 180);
+                    doc.text('Personal Details', 20, 160);
+                    doc.setFontSize(12);
+                    doc.setTextColor(0, 0, 0);
+                    doc.text('Permanent Address: Kolhapur (416006)', 20, 170);
+                    doc.text('Date of Birth: 07-04-2001', 20, 180);
+                    doc.text('Nationality: Indian', 20, 190);
+                    doc.text('Languages: English, Hindi, Marathi', 20, 200);
+
+                    doc.save('Mrunmai_Vhatkar_Resume.pdf');
+                });
+            } catch (error) {
+                console.error('Script Error:', error);
+            }
         };
     </script>
 </body>
