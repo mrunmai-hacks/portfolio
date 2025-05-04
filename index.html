@@ -1,58 +1,117 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>My Portfolio</title>
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mrunmai Vhatkar - Cybersecurity Professional</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-
-  <!-- Preloader -->
-  <div id="preloader">
-    <div class="loader"></div>
-  </div>
-
-  <!-- Main Content -->
-  <header>
-    <h1>Hi, I'm Jane Doe</h1>
-    <p>Web Developer & Designer</p>
-  </header>
-
-  <section id="about">
-    <h2>About Me</h2>
-    <p>I'm a passionate developer with a love for clean code and beautiful design.</p>
-  </section>
-
-  <section id="projects">
-    <h2>Projects</h2>
-    <div class="project">
-      <h3>Project One</h3>
-      <p>A cool website built with HTML, CSS, and JS.</p>
+    <!-- Loading Screen -->
+    <div id="loader">
+        <div class="spinner"></div>
     </div>
-    <div class="project">
-      <h3>Project Two</h3>
-      <p>A mobile-friendly design project with responsive UI.</p>
+
+    <!-- Main Content -->
+    <div id="content" style="display: none;">
+        <header>
+            <nav>
+                <ul>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#skills">Skills</a></li>
+                    <li><a href="#projects">Projects</a></li>
+                    <li><a href="#education">Education</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <section id="about">
+            <div class="profile">
+                <h1>Mrunmai Vhatkar</h1>
+                <p>B.Tech. Computer Science and Engineering</p>
+                <p><i class="fas fa-map-marker-alt"></i> Karve Nagar, Pune (411052)</p>
+                <p><i class="fas fa-envelope"></i> vhatkarmrunmai@gmail.com</p>
+                <p><i class="fab fa-linkedin"></i> LinkedIn</p>
+                <p><i class="fas fa-phone"></i> 7758999456</p>
+            </div>
+            <div class="summary">
+                <h2>Summary</h2>
+                <p>A dedicated cybersecurity professional with coursework in cybersecurity and experience in network security. Skilled in vulnerability analysis, incident response, and familiar with SIEM tools like Splunk and QRadar. Strong understanding of networking concepts, MITRE ATT&CK framework, and cloud security.</p>
+            </div>
+        </section>
+
+        <section id="skills">
+            <h2>Technical Skills</h2>
+            <div class="skills-grid">
+                <div class="skill-card"><i class="fas fa-shield-alt"></i> SIEM Tools (Splunk, QRadar, LogRhythm)</div>
+                <div class="skill-card"><i class="fas fa-code"></i> Scripting Languages</div>
+                <div class="skill-card"><i class="fas fa-network-wired"></i> Networking Concepts</div>
+                <div class="skill-card"><i class="fas fa-bug"></i> Vulnerability Analysis</div>
+                <div class="skill-card"><i class="fas fa-laptop-code"></i> Programming: C, C++, C#, Python, SQL</div>
+                <div class="skill-card"><i class="fas fa-database"></i> Databases: Oracle, MySQL, Firebase</div>
+                <div class="skill-card"><i class="fab fa-html5"></i> Web: HTML, CSS</div>
+                <div class="skill-card"><i class="fas fa-tools"></i> Tools: Kali Linux, Wireshark, Nmap, Metasploit</div>
+            </div>
+            <h2>Interpersonal Skills</h2>
+            <p>Teamwork, Collaboration, Problem-solving, Supervision, Time Management, Analytical Skills, Communication, Credibility, Flexibility, Mentorship</p>
+        </section>
+
+        <section id="projects">
+            <h2>Projects</h2>
+            <div class="project-card">
+                <h3>Aptister (2D Quiz Game)</h3>
+                <p><strong>Duration:</strong> 18 June 2023 - 20 Oct 2023</p>
+                <p><strong>Mentor:</strong> Prof. K. T. Mane | <strong>Team Size:</strong> 3 | <strong>Role:</strong> Team Lead</p>
+                <p>An engaging college project showcasing a dynamic and interactive learning experience. Features include Firebase integration for score storage, administrative controls for quiz content management, and a visually appealing UI.</p>
+                <p><strong>Features:</strong> Student management system, Online quiz, Admin interface, Real-time sync, Firebase.</p>
+            </div>
+        </section>
+
+        <section id="education">
+            <h2>Education</h2>
+            <div class="education-card">
+                <h3>D. Y. Patil College of Engineering and Technology, Kolhapur</h3>
+                <p>B.Tech. Computer Science | June 2019 – Nov 2023 | 73.96%</p>
+            </div>
+            <div class="education-card">
+                <h3>P. Vivekananda College, Kolhapur</h3>
+                <p>12th Grade (HSC) | June 2017 – June 2018 | 54.62%</p>
+            </div>
+            <div class="education-card">
+                <h3>S.K.Pant Walawalkar Highschool</h3>
+                <p>10th Grade (SSC) | Batch 2016 | 89.60%</p>
+            </div>
+        </section>
+
+        <section id="contact">
+            <h2>Personal Details</h2>
+            <p><strong>Permanent Address:</strong> Kolhapur (416006)</p>
+            <p><strong>Date of Birth:</strong> 7 April 2001</p>
+            <p><strong>Nationality:</strong> Indian</p>
+            <p><strong>Marital Status:</strong> Unmarried</p>
+            <p><strong>Languages:</strong> English, Hindi, Marathi</p>
+            <h2>Declaration</h2>
+            <p>I hereby declare that all the specific information provided above is true to the best of my knowledge and belief.</p>
+            <p><strong>Date:</strong> 05/08/2024</p>
+            <p><strong>Signature:</strong> Mrunmai S Vhatkar</p>
+        </section>
+
+        <footer>
+            <p>&copy; 2025 Mrunmai Vhatkar. All rights reserved.</p>
+        </footer>
     </div>
-  </section>
 
-  <section id="contact">
-    <h2>Contact</h2>
-    <p>Email: jane@example.com</p>
-  </section>
-
-  <footer>
-    <p>&copy; 2025 Jane Doe. All rights reserved.</p>
-  </footer>
-
-  <script>
-    window.addEventListener("load", function () {
-      const preloader = document.getElementById("preloader");
-      preloader.style.opacity = "0";
-      setTimeout(() => {
-        preloader.style.display = "none";
-      }, 500);
-    });
-  </script>
+    <script>
+        // Loading screen animation
+        window.onload = function() {
+            setTimeout(() => {
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('content').style.display = 'block';
+            }, 3000);
+        };
+    </script>
 </body>
 </html>
